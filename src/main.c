@@ -46,6 +46,7 @@ void render(void)
 
     draw_grid();
 
+    draw_pixel(20, 20, 0xFFFFFF00);
     draw_rect(300, 200, 300, 150, 0xFFF00FF);
 
     render_color_buffer();
