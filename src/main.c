@@ -17,6 +17,8 @@ float fov_factor = 640;
 
 bool is_running = false;
 
+uint32_t previous_frame_time = 0;
+
 void setup()
 {
     color_buffer = (uint32_t *)malloc(sizeof(uint32_t) * window_width * window_height);
@@ -75,6 +77,11 @@ vec2_t project(vec3_t point){
 
 void update(void)
 {
+    // Block execution until we reach FRAME_TARGET_TIME to stabilise frame rate
+    while(!SDL_TICKS_PASSED(SDL_GetTicks(), previous_frame_time + FRAME_TARGET_TIME));
+
+    previous_frame_time = SDL_GetTicks();
+
     cube_rotation.z += 0.01;
     cube_rotation.y += 0.01;
     cube_rotation.z += 0.01;
