@@ -31,6 +31,7 @@ void setup()
         int point_count = 0;
 
 
+    // Load vectors to memory
     for (float x = -1; x <= 1; x += 0.25)
     {
         for (float y = -1; y <= 1; y += 0.25)
@@ -74,14 +75,21 @@ vec2_t project(vec3_t point){
 
 void update(void)
 {
-    cube_rotation.y += 0.1;
+    cube_rotation.z += 0.01;
+    cube_rotation.y += 0.01;
+    cube_rotation.z += 0.01;
+
     for (int i = 0; i< N_POINTS; i++) {
         vec3_t point = cube_points[i];
 
-        // Move points back
-        point.z -= camera_position.z;
+        vec3_t transformed_point = vec3_rotate_x(point, cube_rotation.x);
+        transformed_point = vec3_rotate_y(transformed_point, cube_rotation.y);
+        transformed_point = vec3_rotate_z(transformed_point, cube_rotation.z);
 
-        vec2_t projected_point = project(point);
+        // Translate points away from the camera
+        transformed_point.z -= camera_position.z;
+
+        vec2_t projected_point = project(transformed_point);
 
         projected_points[i] = projected_point;
     }
