@@ -77,9 +77,8 @@ vec2_t project(vec3_t point){
 
 void update(void)
 {
-    int delay_ms = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_ms);
-
     // Release execution back to the CPU until we reach FRAME_TARGET_TIME to stabilise frame rate
+    int delay_ms = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_ms);
     if(delay_ms > 0 && delay_ms <= FRAME_TARGET_TIME) {
         SDL_Delay(delay_ms);
     }
