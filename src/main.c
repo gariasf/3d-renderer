@@ -11,7 +11,8 @@ triangle_t* triangles_to_render = NULL;
 
 vec3_t camera_position = {.x = 0, .y = 0, .z = -5};
 
-// It's a bit high to see the models properly on a 4k screen
+// float fov_factor = 640;
+// Larger fov for larger screens
 float fov_factor = 1000;
 
 bool is_running = false;
