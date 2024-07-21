@@ -11,7 +11,8 @@ triangle_t* triangles_to_render = NULL;
 
 vec3_t camera_position = {.x = 0, .y = 0, .z = -5};
 
-float fov_factor = 640;
+// It's a bit high to see the models properly on a 4k screen
+float fov_factor = 1000;
 
 bool is_running = false;
 
@@ -28,7 +29,8 @@ void setup()
         window_width,
         window_height);
 
-    load_cube_mesh_data();
+    // load_cube_mesh_data();
+    load_obj_file_data("./assets/cube.obj");
 }
 
 void process_input(void)
@@ -71,9 +73,9 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    mesh.rotation.z += 0.01;
-    mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.01;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.0;
+    mesh.rotation.z += 0.0;
 
 
     int n_faces = array_length(mesh.faces);
