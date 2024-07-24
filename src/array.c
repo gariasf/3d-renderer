@@ -1,4 +1,4 @@
-// https://github.com/gustavopezzi/dynamicarray
+// From https://github.com/gustavopezzi/dynamicarray
 #include <stdio.h>
 #include <stdlib.h>
 #include "array.h"

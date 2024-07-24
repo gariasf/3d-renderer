@@ -1,4 +1,4 @@
-// https://github.com/gustavopezzi/dynamicarray
+// From https://github.com/gustavopezzi/dynamicarray
 #pragma once
 
 #define array_push(array, value)                                              \
