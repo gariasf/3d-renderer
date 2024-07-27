@@ -147,24 +147,29 @@ void render(void)
 {
     draw_grid();
 
-    // int num_triangles = array_length(triangles_to_render);
-    // for (int i = 0; i < num_triangles; i++)
-    // {
-    //     triangle_t triangle = triangles_to_render[i];
-    //     draw_rect(triangle.vertices[0].x, triangle.vertices[0].y, 3, 3, 0xFFFFFF00);
-    //     draw_rect(triangle.vertices[1].x, triangle.vertices[1].y, 3, 3, 0xFFFFFF00);
-    //     draw_rect(triangle.vertices[3].x, triangle.vertices[3].y, 3, 3, 0xFFFFFF00);
-    //
-    //     draw_triangle(
-    //         triangle.vertices[0].x, triangle.vertices[0].y,
-    //         triangle.vertices[1].x, triangle.vertices[1].y,
-    //         triangle.vertices[2].x, triangle.vertices[2].y,
-    //         0xFF00FF00);
-    // }
-    //
-     draw_filled_triangle(
-            300, 100, 50, 400, 500, 700,
-             0xFF00FF00);
+    int num_triangles = array_length(triangles_to_render);
+    for (int i = 0; i < num_triangles; i++)
+    {
+       triangle_t triangle = triangles_to_render[i];
+       draw_rect(triangle.vertices[0].x, triangle.vertices[0].y, 3, 3, 0xFFFFFF00);
+       draw_rect(triangle.vertices[1].x, triangle.vertices[1].y, 3, 3, 0xFFFFFF00);
+       draw_rect(triangle.vertices[3].x, triangle.vertices[3].y, 3, 3, 0xFFFFFF00);
+
+       draw_filled_triangle(
+            triangle.vertices[0].x, triangle.vertices[0].y,
+            triangle.vertices[1].x, triangle.vertices[1].y,
+            triangle.vertices[2].x, triangle.vertices[2].y,
+            0xFFFFFFFF
+       );
+
+       draw_triangle(
+            triangle.vertices[0].x, triangle.vertices[0].y,
+            triangle.vertices[1].x, triangle.vertices[1].y,
+            triangle.vertices[2].x, triangle.vertices[2].y,
+            0xFF000000
+       );
+
+    }
 
     array_free(triangles_to_render);
 
