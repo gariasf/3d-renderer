@@ -80,7 +80,8 @@ vec2_t project(vec3_t point)
 {
     vec2_t projected_point = {
         .x = (fov_factor * point.x) / point.z,
-        .y = (fov_factor * point.y) / point.z};
+        .y = (fov_factor * point.y) / point.z
+    };
 
     return projected_point;
 }
@@ -170,16 +171,31 @@ void update(void)
 
         }
 
+        float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3;
+
         triangle_t projected_triangle = {
             .vertices = {
                 {projected_vertices[0].x, projected_vertices[0].y},
                 {projected_vertices[1].x, projected_vertices[1].y},
                 {projected_vertices[2].x, projected_vertices[2].y}
             },
-            .color = mesh_face.color
+            .color = mesh_face.color,
+            .avg_depth = avg_depth
         };
 
         array_push(triangles_to_render, projected_triangle);
+    }
+
+    int num_triangles = array_length(triangles_to_render);
+
+    for (int i = 0; i < num_triangles; i++) {
+        for (int j = i; j < num_triangles; j++) {
+            if(triangles_to_render[i].avg_depth < triangles_to_render[j].avg_depth) {
+                triangle_t temp = triangles_to_render[i];
+                triangles_to_render[i] = triangles_to_render[j];
+                triangles_to_render[j] = temp;
+            }
+        }
     }
 }
 
@@ -217,7 +233,6 @@ void render(void)
             draw_rect(triangle.vertices[1].x - 3, triangle.vertices[1].y - 3, 6, 6, 0xFFFF0000); // vertex B
             draw_rect(triangle.vertices[2].x - 3, triangle.vertices[2].y - 3, 6, 6, 0xFFFF0000); // vertex C
         }
-
     }
 
     array_free(triangles_to_render);
