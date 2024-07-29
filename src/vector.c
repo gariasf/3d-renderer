@@ -13,6 +13,7 @@ vec2_t vec2_add(vec2_t a, vec2_t b) {
 
     return result;
 }
+
 vec2_t vec2_sub(vec2_t a, vec2_t b){
     vec2_t result = {
         .x = a.x - b.x,
@@ -30,6 +31,7 @@ vec2_t vec2_mul(vec2_t v, float factor) {
 
     return result;
 }
+
 vec2_t vec2_div(vec2_t v, float factor) {
     vec2_t result = {
         .x = v.x / factor,
@@ -63,6 +65,7 @@ vec3_t vec3_add(vec3_t a, vec3_t b) {
 
     return result;
 }
+
 vec3_t vec3_sub(vec3_t a, vec3_t b){
     vec3_t result = {
         .x = a.x - b.x,
@@ -82,6 +85,7 @@ vec3_t vec3_mul(vec3_t v, float factor) {
 
     return result;
 }
+
 vec3_t vec3_div(vec3_t v, float factor) {
     vec3_t result = {
         .x = v.x / factor,
@@ -112,6 +116,7 @@ void vec3_normalize(vec3_t *v) {
     v->y /= length;
     v->z /= length;
 }
+
 vec3_t vec3_rotate_x(vec3_t v, float angle)
 {
     vec3_t result = {
