@@ -8,6 +8,10 @@
 #include "array.h"
 #include "matrix.h"
 
+#ifndef M_PI
+#    define M_PI 3.14159265358979323846
+#endif
+
 enum cull_method {
     CULL_NONE,
     CULL_BACKFACE
@@ -23,10 +27,7 @@ enum render_method {
 triangle_t *triangles_to_render = NULL;
 
 vec3_t camera_position = { .x = 0, .y = 0, .z = 0 };
-
-// float fov_factor = 640;
-// Larger fov for larger screens
-float fov_factor = 1000;
+mat4_t projection_matrix;
 
 bool is_running = false;
 
@@ -45,6 +46,18 @@ void setup()
         SDL_TEXTUREACCESS_STREAMING,
         window_width,
         window_height);
+
+    float fov = M_PI/3.0;
+    float aspect = (float)window_height / (float)window_width;
+    float znear = 0.1;
+    float zfar = 100.0;
+
+    projection_matrix = mat4_make_perspective(
+        fov,
+        aspect,
+        znear,
+        zfar
+    );
 
     load_cube_mesh_data();
     // load_obj_file_data("./assets/cube.obj");
@@ -77,16 +90,6 @@ void process_input(void)
        }
 }
 
-vec2_t project(vec3_t point)
-{
-    vec2_t projected_point = {
-        .x = (fov_factor * point.x) / point.z,
-        .y = (fov_factor * point.y) / point.z
-    };
-
-    return projected_point;
-}
-
 void update(void)
 {
     // Release execution back to the CPU until we reach FRAME_TARGET_TIME to stabilise frame rate
@@ -101,11 +104,11 @@ void update(void)
     triangles_to_render = NULL;
 
     mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.01;
-    mesh.scale.x += 0.002;
-    mesh.scale.y += 0.001;
-    mesh.translation.x += 0.01;
+    //mesh.rotation.y += 0.01;
+    //mesh.rotation.z += 0.01;
+    //mesh.scale.x += 0.002;
+    //mesh.scale.y += 0.001;
+    //mesh.translation.x += 0.01;
     mesh.translation.z = 5.0;
 
     mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.y);
@@ -170,17 +173,19 @@ void update(void)
             }
         }
 
-        vec2_t projected_vertices[3];
+        vec4_t projected_vertices[3];
 
         // Loop all three vertices to perform projection
         for (int j = 0; j < 3; j++) {
             // Project the current vertex
-            projected_vertices[j] = project(vec3_from_vec4(transformed_vertices[j]));
+            projected_vertices[j] = mat4_mul_vec4_project(projection_matrix, transformed_vertices[j]);
 
-            // Scale and translate the projected points to the middle of the screen
+            // Scale into the viewport
+            projected_vertices[j].x *= (window_width / 2);
+            projected_vertices[j].y *= (window_height / 2);
+            // Translate the projected points to the middle of the screen
             projected_vertices[j].x += (window_width / 2);
             projected_vertices[j].y += (window_height / 2);
-
         }
 
         float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3;
