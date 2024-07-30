@@ -22,6 +22,17 @@ mat4_t mat4_make_scale(float sx, float sy, float sz) {
     return m;
 }
 
+mat4_t mat4_make_translation(float tx, float ty, float tz) {
+    mat4_t m = {{
+        {1, 0, 0, tx},
+        {0, 1, 0, ty},
+        {0, 0, 1, tz},
+        {0, 0, 0, 1},
+    }};
+
+    return m;
+}
+
 vec4_t mat4_mul_vec4(mat4_t m, vec4_t v) {
     vec4_t result = {
         .x = m.m[0][0] * v.x + m.m[0][1] * v.y + m.m[0][2] * v.z + m.m[0][3] * v.w,

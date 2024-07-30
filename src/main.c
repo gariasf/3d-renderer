@@ -100,13 +100,18 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.01;
+    //mesh.rotation.x += 0.01;
+    //mesh.rotation.y += 0.01;
+    // mesh.rotation.z += 0.01;
 
-    mesh.scale.x += 0.002;
+    // mesh.scale.x += 0.002;
+    // mesh.scale.y += 0.001;
+    mesh.translation.x += 0.01;
+    mesh.translation.z = 5.0;
+
 
     mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.y);
+    mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
 
     int n_faces = array_length(mesh.faces);
     for (int i = 0; i < n_faces; i++)
@@ -127,9 +132,7 @@ void update(void)
             vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
 
             transformed_vertex = mat4_mul_vec4(scale_matrix, transformed_vertex);
-
-            // Translate points away from the camera
-            transformed_vertex.z += 5;
+            transformed_vertex = mat4_mul_vec4(translation_matrix, transformed_vertex);
 
             transformed_vertices[j] = transformed_vertex;
         }
