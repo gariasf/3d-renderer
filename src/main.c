@@ -8,6 +8,8 @@
 #include "array.h"
 #include "matrix.h"
 #include "light.h"
+#include "texture.h"
+#include "triangle.h"
 
 #ifndef M_PI
 #    define M_PI 3.14159265358979323846
@@ -22,7 +24,9 @@ enum render_method {
     RENDER_WIRE,
     RENDER_WIRE_VERTEX,
     RENDER_FILL_TRIANGLE,
-    RENDER_FILL_TRIANGLE_WIRE
+    RENDER_FILL_TRIANGLE_WIRE,
+    RENDER_TEXTURED,
+    RENDER_TEXTURED_WIRE
 } render_method;
 
 triangle_t *triangles_to_render = NULL;
@@ -60,8 +64,10 @@ void setup()
         zfar
     );
 
-    // load_cube_mesh_data();
-    load_obj_file_data("./assets/private/f22.obj");
+    load_cube_mesh_data();
+    // load_obj_file_data("./assets/private/f22.obj");
+
+    mesh_texture = (uint32_t*) REDBRICK_TEXTURE;
 }
 
 void process_input(void)
@@ -83,6 +89,10 @@ void process_input(void)
                    render_method = RENDER_FILL_TRIANGLE;
                if (event.key.keysym.sym == SDLK_4)
                    render_method = RENDER_FILL_TRIANGLE_WIRE;
+               if (event.key.keysym.sym == SDLK_5)
+                   render_method = RENDER_TEXTURED;
+               if (event.key.keysym.sym == SDLK_6)
+                   render_method = RENDER_TEXTURED_WIRE;
                if (event.key.keysym.sym == SDLK_c)
                    cull_method = CULL_BACKFACE;
                if (event.key.keysym.sym == SDLK_d)
@@ -205,6 +215,11 @@ void update(void)
                 {projected_vertices[1].x, projected_vertices[1].y},
                 {projected_vertices[2].x, projected_vertices[2].y}
             },
+            .texcoords = {
+                { mesh_face.a_uv.u, mesh_face.a_uv.v },
+                { mesh_face.b_uv.u, mesh_face.b_uv.v },
+                { mesh_face.c_uv.u, mesh_face.c_uv.v },
+            },
             .color = triangle_color,
             .avg_depth = avg_depth
         };
@@ -245,12 +260,21 @@ void render(void)
             );
         }
 
-        if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE) {
+        if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE || render_method == RENDER_TEXTURED_WIRE) {
             draw_triangle(
                 triangle.vertices[0].x, triangle.vertices[0].y, // vertex A
                 triangle.vertices[1].x, triangle.vertices[1].y, // vertex B
                 triangle.vertices[2].x, triangle.vertices[2].y, // vertex C
                 0xFFFFFFFF
+            );
+        }
+
+        if(render_method == RENDER_TEXTURED || render_method == RENDER_TEXTURED_WIRE) {
+            draw_textured_triangle(
+                triangle.vertices[0].x, triangle.vertices[0].y, triangle.texcoords[0].u, triangle.texcoords[0].v, // vertex A
+                triangle.vertices[1].x, triangle.vertices[1].y, triangle.texcoords[1].u, triangle.texcoords[1].v, // vertex B
+                triangle.vertices[2].x, triangle.vertices[2].y, triangle.texcoords[2].u, triangle.texcoords[2].v, // vertex C
+                mesh_texture
             );
         }
 
