@@ -23,9 +23,16 @@ typedef struct {
 
 void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color);
 void draw_filled_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color);
+void draw_texel(
+    int x, int y,
+    uint32_t* texture,
+    vec2_t vertex_a, vec2_t vertex_b, vec2_t vertex_c,
+    float u0, float v0, float u1, float v1, float u2, float v2
+);
 void draw_textured_triangle(
     int x0, int y0, float u0, float v0,
     int x1, int y1, float u1, float v1,
     int x2, int y2, float u2, float v2,
     uint32_t* texture
 );
+vec3_t barycentric_weights(vec2_t a, vec2_t b, vec2_t c, vec2_t p);

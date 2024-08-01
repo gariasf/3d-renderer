@@ -114,9 +114,9 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.00;
-    mesh.rotation.z += 0.00;
+    // mesh.rotation.x += 0.01;
+    //mesh.rotation.y += 0.00;
+    //mesh.rotation.z += 0.00;
     //mesh.scale.x += 0.002;
     //mesh.scale.y += 0.001;
     //mesh.translation.x += 0.01;
