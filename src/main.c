@@ -114,9 +114,9 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    // mesh.rotation.x += 0.01;
-    //mesh.rotation.y += 0.00;
-    //mesh.rotation.z += 0.00;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.01;
+    mesh.rotation.z += 0.01;
     //mesh.scale.x += 0.002;
     //mesh.scale.y += 0.001;
     //mesh.translation.x += 0.01;
@@ -211,9 +211,9 @@ void update(void)
 
         triangle_t projected_triangle = {
             .vertices = {
-                {projected_vertices[0].x, projected_vertices[0].y},
-                {projected_vertices[1].x, projected_vertices[1].y},
-                {projected_vertices[2].x, projected_vertices[2].y}
+                { projected_vertices[0].x, projected_vertices[0].y, projected_vertices[0].z,  projected_vertices[0].w },
+                { projected_vertices[1].x, projected_vertices[1].y, projected_vertices[1].z,  projected_vertices[1].w },
+                { projected_vertices[2].x, projected_vertices[2].y, projected_vertices[2].z,  projected_vertices[2].w }
             },
             .texcoords = {
                 { mesh_face.a_uv.u, mesh_face.a_uv.v },
@@ -271,9 +271,9 @@ void render(void)
 
         if(render_method == RENDER_TEXTURED || render_method == RENDER_TEXTURED_WIRE) {
             draw_textured_triangle(
-                triangle.vertices[0].x, triangle.vertices[0].y, triangle.texcoords[0].u, triangle.texcoords[0].v, // vertex A
-                triangle.vertices[1].x, triangle.vertices[1].y, triangle.texcoords[1].u, triangle.texcoords[1].v, // vertex B
-                triangle.vertices[2].x, triangle.vertices[2].y, triangle.texcoords[2].u, triangle.texcoords[2].v, // vertex C
+                triangle.vertices[0].x, triangle.vertices[0].y, triangle.vertices[0].z, triangle.vertices[0].w, triangle.texcoords[0].u, triangle.texcoords[0].v, // vertex A
+                triangle.vertices[1].x, triangle.vertices[1].y, triangle.vertices[1].z, triangle.vertices[1].w, triangle.texcoords[1].u, triangle.texcoords[1].v, // vertex B
+                triangle.vertices[2].x, triangle.vertices[2].y, triangle.vertices[2].z, triangle.vertices[2].w, triangle.texcoords[2].u, triangle.texcoords[2].v, // vertex C
                 mesh_texture
             );
         }
