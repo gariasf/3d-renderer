@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 #include "display.h"
+#include "upng.h"
 #include "vector.h"
 #include "mesh.h"
 #include "array.h"
@@ -47,7 +48,7 @@ void setup()
 
     color_buffer_texture = SDL_CreateTexture(
         renderer,
-        SDL_PIXELFORMAT_ARGB8888,
+        SDL_PIXELFORMAT_RGBA32,
         SDL_TEXTUREACCESS_STREAMING,
         window_width,
         window_height);
@@ -67,7 +68,9 @@ void setup()
     load_cube_mesh_data();
     // load_obj_file_data("./assets/private/f22.obj");
 
-    mesh_texture = (uint32_t*) REDBRICK_TEXTURE;
+    // mesh_texture = (uint32_t*) REDBRICK_TEXTURE;
+
+    load_png_texture_data("./assets/cube.png");
 }
 
 void process_input(void)
@@ -297,6 +300,7 @@ void render(void)
 void free_resources(void)
 {
     free(color_buffer);
+    upng_free(png_texture);
     array_free(mesh.vertices);
     array_free(mesh.faces);
 }
