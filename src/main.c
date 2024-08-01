@@ -53,7 +53,7 @@ void setup()
         window_width,
         window_height);
 
-    float fov = M_PI/3.0;
+    float fov = M_PI/1.8;
     float aspect = (float)window_height / (float)window_width;
     float znear = 0.1;
     float zfar = 100.0;
@@ -65,10 +65,8 @@ void setup()
         zfar
     );
 
-    load_cube_mesh_data();
-    // load_obj_file_data("./assets/private/f22.obj");
-
-    // mesh_texture = (uint32_t*) REDBRICK_TEXTURE;
+    // load_cube_mesh_data();
+    load_obj_file_data("./assets/cube.obj");
 
     load_png_texture_data("./assets/cube.png");
 }
@@ -117,9 +115,9 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    mesh.rotation.x += 0.01;
+    // mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.01;
+    //mesh.rotation.z += 0.01;
     //mesh.scale.x += 0.002;
     //mesh.scale.y += 0.001;
     //mesh.translation.x += 0.01;
@@ -136,9 +134,9 @@ void update(void)
         face_t mesh_face = mesh.faces[i];
 
         vec3_t face_vertices[3];
-        face_vertices[0] = mesh.vertices[mesh_face.a - 1];
-        face_vertices[1] = mesh.vertices[mesh_face.b - 1];
-        face_vertices[2] = mesh.vertices[mesh_face.c - 1];
+        face_vertices[0] = mesh.vertices[mesh_face.a];
+        face_vertices[1] = mesh.vertices[mesh_face.b];
+        face_vertices[2] = mesh.vertices[mesh_face.c];
 
 
         vec4_t transformed_vertices[3];
