@@ -66,9 +66,9 @@ void setup()
     );
 
     // load_cube_mesh_data();
-    load_obj_file_data("./assets/cube.obj");
+    load_obj_file_data("./assets/crab.obj");
 
-    load_png_texture_data("./assets/cube.png");
+    load_png_texture_data("./assets/crab.png");
 }
 
 void process_input(void)
@@ -115,9 +115,9 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    // mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.01;
-    //mesh.rotation.z += 0.01;
+    mesh.rotation.x -= 0.01;
+    mesh.rotation.y -= 0.01;
+    mesh.rotation.z -= 0.01;
     //mesh.scale.x += 0.002;
     //mesh.scale.y += 0.001;
     //mesh.translation.x += 0.01;
