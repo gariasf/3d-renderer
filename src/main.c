@@ -66,9 +66,9 @@ void setup()
     );
 
     // load_cube_mesh_data();
-    load_obj_file_data("./assets/crab.obj");
+    load_obj_file_data("./assets/cube.obj");
 
-    load_png_texture_data("./assets/crab.png");
+    load_png_texture_data("./assets/cube.png");
 }
 
 void process_input(void)
