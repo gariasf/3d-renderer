@@ -11,6 +11,7 @@
 #include "light.h"
 #include "texture.h"
 #include "triangle.h"
+#include "camera.h"
 
 #ifndef M_PI
 #    define M_PI 3.14159265358979323846
@@ -32,8 +33,9 @@ enum render_method {
 
 triangle_t *triangles_to_render = NULL;
 
-vec3_t camera_position = { .x = 0, .y = 0, .z = 0 };
+mat4_t world_matrix;
 mat4_t projection_matrix;
+mat4_t view_matrix;
 
 bool is_running = false;
 
@@ -66,9 +68,9 @@ void setup()
     );
 
     // load_cube_mesh_data();
-    load_obj_file_data("./assets/cube.obj");
+    load_obj_file_data("./assets/f22.obj");
 
-    load_png_texture_data("./assets/cube.png");
+    load_png_texture_data("./assets/f22.png");
 }
 
 void process_input(void)
@@ -123,6 +125,20 @@ void update(void)
     //mesh.translation.x += 0.01;
     mesh.translation.z = 5.0;
 
+    // Change camera position
+    camera.position.x += 0.008;
+    camera.position.y += 0.008;
+
+    // Create view matrix (looking at a hardcoded target point)
+    vec3_t target = {0, 0, 5.0};
+    vec3_t up = {0, 1, 0};
+    view_matrix = mat4_look_at(
+        camera.position,
+        target,
+        up 
+    );
+
+
     mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.y);
     mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
     mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
@@ -146,7 +162,7 @@ void update(void)
         {
             vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
 
-            mat4_t world_matrix = mat4_identity();
+            world_matrix = mat4_identity();
             world_matrix = mat4_mul_mat4(scale_matrix, world_matrix);
             world_matrix = mat4_mul_mat4(rotation_matrix_z, world_matrix);
             world_matrix = mat4_mul_mat4(rotation_matrix_y, world_matrix);
@@ -154,6 +170,8 @@ void update(void)
             world_matrix = mat4_mul_mat4(translation_matrix, world_matrix);
 
             transformed_vertex = mat4_mul_vec4(world_matrix, transformed_vertex);
+            
+            transformed_vertex = mat4_mul_vec4(view_matrix, transformed_vertex);
 
             transformed_vertices[j] = transformed_vertex;
         }
@@ -172,7 +190,8 @@ void update(void)
         vec3_normalize(&normal);
 
         // Find the vector between vertex A in the triangle and the camera origin
-        vec3_t camera_ray = vec3_sub(camera_position, vector_a);
+        vec3_t origin = {0, 0, 0};
+        vec3_t camera_ray = vec3_sub(origin, vector_a);
 
         // Calculate how aligned the camera ray is with the face normal (using dot product)
         float dot_normal_camera = vec3_dot(normal, camera_ray);
