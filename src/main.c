@@ -12,6 +12,7 @@
 #include "texture.h"
 #include "triangle.h"
 #include "camera.h"
+#include "clipping.h"
 
 #ifndef M_PI
 #    define M_PI 3.14159265358979323846
@@ -66,6 +67,9 @@ void setup()
         znear,
         zfar
     );
+
+    // Initialise furstum planes with a point and a normal
+    init_frustum_planes(fov, znear, zfar);
 
     // load_cube_mesh_data();
     load_obj_file_data("./assets/f22.obj");
