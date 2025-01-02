@@ -76,32 +76,48 @@ void setup()
 void process_input(void)
 {
     SDL_Event event;
-       SDL_PollEvent(&event);
-       switch (event.type) {
-           case SDL_QUIT:
-               is_running = false;
-               break;
-           case SDL_KEYDOWN:
-               if (event.key.keysym.sym == SDLK_ESCAPE)
-                   is_running = false;
-               if (event.key.keysym.sym == SDLK_1)
-                   render_method = RENDER_WIRE_VERTEX;
-               if (event.key.keysym.sym == SDLK_2)
-                   render_method = RENDER_WIRE;
-               if (event.key.keysym.sym == SDLK_3)
-                   render_method = RENDER_FILL_TRIANGLE;
-               if (event.key.keysym.sym == SDLK_4)
-                   render_method = RENDER_FILL_TRIANGLE_WIRE;
-               if (event.key.keysym.sym == SDLK_5)
-                   render_method = RENDER_TEXTURED;
-               if (event.key.keysym.sym == SDLK_6)
-                   render_method = RENDER_TEXTURED_WIRE;
-               if (event.key.keysym.sym == SDLK_c)
-                   cull_method = CULL_BACKFACE;
-               if (event.key.keysym.sym == SDLK_d)
-                   cull_method = CULL_NONE;
-               break;
-       }
+    SDL_PollEvent(&event);
+    switch (event.type) {
+        case SDL_QUIT:
+            is_running = false;
+            break;
+        case SDL_KEYDOWN:
+            if (event.key.keysym.sym == SDLK_ESCAPE)
+                is_running = false;
+            if (event.key.keysym.sym == SDLK_1)
+                render_method = RENDER_WIRE_VERTEX;
+            if (event.key.keysym.sym == SDLK_2)
+                render_method = RENDER_WIRE;
+            if (event.key.keysym.sym == SDLK_3)
+                render_method = RENDER_FILL_TRIANGLE;
+            if (event.key.keysym.sym == SDLK_4)
+                render_method = RENDER_FILL_TRIANGLE_WIRE;
+            if (event.key.keysym.sym == SDLK_5)
+                render_method = RENDER_TEXTURED;
+            if (event.key.keysym.sym == SDLK_6)
+                render_method = RENDER_TEXTURED_WIRE;
+            if (event.key.keysym.sym == SDLK_c)
+                cull_method = CULL_BACKFACE;
+            if (event.key.keysym.sym == SDLK_d)
+                cull_method = CULL_NONE;
+            if (event.key.keysym.sym == SDLK_UP)
+                camera.position.y += 3.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_DOWN)
+                camera.position.y -= 3.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_a)
+                camera.yaw -= 1.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_d)
+                camera.yaw += 1.0 * delta_time;
+            if (event.key.keysym.sym == SDLK_w) {
+                camera.forward_velocity = vec3_mul(camera.direction, 5.0 * delta_time); 
+                camera.position = vec3_add(camera.position, camera.forward_velocity);
+            }
+            if (event.key.keysym.sym == SDLK_s) {
+                camera.forward_velocity = vec3_mul(camera.direction, 5.0 * delta_time); 
+                camera.position = vec3_sub(camera.position, camera.forward_velocity);
+            }
+            break;
+    }
 }
 
 void update(void)
@@ -119,20 +135,20 @@ void update(void)
 
     triangles_to_render = NULL;
 
-    mesh.rotation.x -= 0.5 * delta_time;
-    mesh.rotation.y -= 0.5 * delta_time;
-    mesh.rotation.z -= 0.5 * delta_time;
-    //mesh.scale.x += 0.002;
-    //mesh.scale.y += 0.001;
-    //mesh.translation.x += 0.01;
+    mesh.rotation.x += 0.0 * delta_time;
+    mesh.rotation.y += 0.0 * delta_time;
+    mesh.rotation.z += 0.0 * delta_time;
     mesh.translation.z = 5.0;
 
-    // Change camera position
-    camera.position.x += 0.8 * delta_time;
-    camera.position.y += 0.5 * delta_time;
+    // Create view matrix
+   
+    // Initialize the target looking at the positive z-axis
+    vec3_t target = { 0, 0, 1 };
+    mat4_t camera_yaw_rotation = mat4_make_rotation_y(camera.yaw);
+    camera.direction = vec3_from_vec4(mat4_mul_vec4(camera_yaw_rotation, vec4_from_vec3(target)));
 
-    // Create view matrix (looking at a hardcoded target point)
-    vec3_t target = {0, 0, 5.0};
+    // Offset the camera position in the direction where the camera is pointing at
+    target = vec3_add(camera.position, camera.direction);
     vec3_t up = {0, 1, 0};
     view_matrix = mat4_look_at(
         camera.position,
@@ -216,9 +232,6 @@ void update(void)
             // Scale into the viewport
             projected_vertices[j].x *= (window_width / 2);
             projected_vertices[j].y *= (window_height / 2);
-
-            // Invert y values to account for flipped screen y coords.
-            projected_vertices[j].y *= -1;
 
             // Translate the projected points to the middle of the screen
             projected_vertices[j].x += (window_width / 2);
