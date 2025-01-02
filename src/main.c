@@ -38,8 +38,8 @@ mat4_t projection_matrix;
 mat4_t view_matrix;
 
 bool is_running = false;
-
 uint32_t previous_frame_ms = 0;
+float delta_time = 0;
 
 void setup()
 {
@@ -113,21 +113,23 @@ void update(void)
         SDL_Delay(delay_ms);
     }
 
+    delta_time = (SDL_GetTicks() - previous_frame_ms) / 1000.0f;
+
     previous_frame_ms = SDL_GetTicks();
 
     triangles_to_render = NULL;
 
-    mesh.rotation.x -= 0.01;
-    mesh.rotation.y -= 0.01;
-    mesh.rotation.z -= 0.01;
+    mesh.rotation.x -= 0.5 * delta_time;
+    mesh.rotation.y -= 0.5 * delta_time;
+    mesh.rotation.z -= 0.5 * delta_time;
     //mesh.scale.x += 0.002;
     //mesh.scale.y += 0.001;
     //mesh.translation.x += 0.01;
     mesh.translation.z = 5.0;
 
     // Change camera position
-    camera.position.x += 0.008;
-    camera.position.y += 0.008;
+    camera.position.x += 0.8 * delta_time;
+    camera.position.y += 0.5 * delta_time;
 
     // Create view matrix (looking at a hardcoded target point)
     vec3_t target = {0, 0, 5.0};
